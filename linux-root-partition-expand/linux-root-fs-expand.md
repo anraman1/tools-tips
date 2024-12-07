@@ -1,7 +1,9 @@
 
 ## Check the Current Partition Layout:
 
+```
    lsblk
+```
 
 ## Use growpart to Expand the Partition (Preferred for Growing Partitions):
 
