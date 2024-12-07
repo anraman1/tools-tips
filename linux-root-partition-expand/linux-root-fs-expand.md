@@ -1,15 +1,16 @@
-Check the Current Partition Layout:
 
-lsblk
+1. Check the Current Partition Layout:
 
-Use growpart to Expand the Partition (Preferred for Growing Partitions):
+  lsblk
 
-sudo growpart /dev/sda1
+2. Use growpart to Expand the Partition (Preferred for Growing Partitions):
 
-resize the filesystem
+  sudo growpart /dev/sda1
+  
+  resize the filesystem
+  
+  sudo resize2fs /dev/sda1
 
-sudo resize2fs /dev/sda1
+3. verify the chagnes
 
-verify the chagnes
-
-df -h
+  df -h
