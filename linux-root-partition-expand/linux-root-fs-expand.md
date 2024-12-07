@@ -7,7 +7,7 @@
 
   sudo growpart /dev/sda1
   
-  resize the filesystem
+## resize the filesystem
   
   sudo resize2fs /dev/sda1
 
