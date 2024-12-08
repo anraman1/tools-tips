@@ -21,8 +21,9 @@ eth2 enthernet unmanaged
   
 
 ## create a New connection for device
+```
 nmcli connection add type ethernet con-name eth2-con ifname eth2
-
+```
 
 ## Edit network to assign the ipaddress
 
