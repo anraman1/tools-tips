@@ -1,6 +1,6 @@
 ## boot the system with ISO image
 
-## Check the Current Partition Layout:
+## Check the Current Partition Layout: 
 
 ```bash
    lsblk
@@ -21,5 +21,5 @@
 ## verify the chagnes
 
 ```bash
-  df -h
+  df -h;
 ```
