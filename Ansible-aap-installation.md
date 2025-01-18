@@ -46,6 +46,8 @@ automationgateway_pg_username='db'
 automationgateway_pg_password='db'
 #automationgateway_pg_host=192.168.34.21
 
+```
+
 
 
 
