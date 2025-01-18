@@ -12,7 +12,7 @@ yum reinstall ca-certificates.noarch
 ```
 
 
-**inventory:
+inventory:
 
 ```
 [automationcontroller]
