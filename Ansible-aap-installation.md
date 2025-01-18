@@ -11,9 +11,10 @@ yum reinstall ca-certificates.noarch
 
 ```
 
-```
-inventory:
 
+#inventory:
+
+```
 [automationcontroller]
 192.168.34.11 ansible_connection=local
 
