@@ -84,3 +84,10 @@ Audience: Platform Engineers, Site Reliability Engineers.
 Disaster Recovery in OpenShift: Best Practices in 10 Minutes
 Key Focus: Backup, restore strategies, and tools like OADP (OpenShift API for Data Protection).
 Audience: Admins and Platform Engineers.
+
+
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+
+mkdir -p ${HOME}/.config/kustomize/plugin/policy.open-cluster-management.io/v1/policygenerator
+
+curl -O https://github.com/open-cluster-management-io/policy-generator-plugin/releases/download/v1.16.0/linux-amd64-PolicyGenerator
