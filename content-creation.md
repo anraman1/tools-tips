@@ -91,3 +91,89 @@ curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack
 mkdir -p ${HOME}/.config/kustomize/plugin/policy.open-cluster-management.io/v1/policygenerator
 
 curl -O https://github.com/open-cluster-management-io/policy-generator-plugin/releases/download/v1.16.0/linux-amd64-PolicyGenerator
+
+
+
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-dependency
+  namespace: acm-config
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: environment
+          operator: In
+          values:
+          - dev
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-dev-policy-dependency
+  namespace: acm-config
+placementRef:
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+  name: placement-policy-dependency
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: dev-policy-dependency
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/description: ""
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+  name: dev-policy-dependency
+  namespace: acm-config
+spec:
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: dev-policy-dependency-cm-1
+      spec:
+        object-templates:
+        - RemediationAction: enforce
+          complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            data:
+              a: "1"
+            kind: ConfigMap
+            metadata:
+              name: data1
+              namespace: rhacs-operator
+        remediationAction: inform
+  - extraDependencies:
+    - apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: ConfigurationPolicy
+      name: dev-policy-dependency-cm-1
+    objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: dev-policy-dependency-cm-2
+      spec:
+        object-templates:
+        - complianceType: mustnothave
+          objectDefinition:
+            apiVersion: v1
+            data:
+              a: "1"
+            kind: ConfigMap
+            metadata:
+              name: data2
+              namespace: rhacs-operator
+        remediationAction: enforce
+
