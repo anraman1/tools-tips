@@ -3,3 +3,50 @@
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
 sudo iptables -A FORWARD -i eth0 -o eth2 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+ip6tables 
+
+
+sudo ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo ip6tables -A FORWARD -i eth2 -o eth0 -j ACCEPT
+sudo ip6tables -A FORWARD -i eth0 -o eth2 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: dev-policy-depedency-cm-1
+spec:
+  object-templates:
+  - complianceType: musthave
+    objectDefinition:
+      apiVersion: v1
+      data:
+        a: "1"
+      kind: ConfigMap
+      metadata:
+        name: data1
+        namespace: rhacs-operator
+
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: dev-policy-depedency-cm-2
+spec:
+  object-templates:
+  - extraDependencies:
+    - apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      name: dev-policy-depedency-cm-1
+      namespace:  ""
+      compliance: Compliant     
+    complianceType: mustnothave
+    objectDefinition:
+      apiVersion: v1
+      data:
+        a: "1"
+      kind: ConfigMap
+      metadata:
+        name: data2
+        namespace: rhacs-operator

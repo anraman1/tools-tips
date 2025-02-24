@@ -21,7 +21,7 @@ To configure HTPasswd idenity
 1. create an HTPasswd file: use the htpasswd ulility to create or update the users
  
  ```
- htpasswd -c -B -b httpass-file user1 password1
+ htpasswd -c -B -b "htpasswd" user1 password1  ##"htpasswd" - file
 
  ```
  2. create a secrets: store the htpasswd file as secrets:

@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openshift-cli-image 
+  namespace: open-cli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smoketest
+  template:
+    metadata:
+      labels:
+        app: smoketest
+    spec:
+      containers:
+      - name: smoketest
+        image: registry.redhat.io/openshift4/oc-mirror-plugin-rhel8
+        command: ["/bin/bash"]
+        args: ["-c", "echo im healthy | tee /health && echo im ready |tee /ready && python -m http.server 8080"]
+        ports:
+        - containerPort: 8080
+        livelinessProbe:
+          httpGet:
+            path: "/health"
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: "/ready"
+            port: 8080    
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: openshift-cli-image
+  namespace:  open-cli
+spec:
+  containers:
+  - name: openshift-cli-image
+    image: registry.redhat.io/openshift4/oc-mirror-plugin-rhel8
+    command: ["/bin/bash"]
+    args: ["-c", "echo im healthy | tee /health && echo im ready |tee /ready && python -m http.server 8080"]
+    ports:
+    - containerPort: 8080
+    livelinessProbe:
+      httpGet:
+        path: "/health"
+        port: 8080
+    readinessProbe:
+      httpGet:
+        path: "/ready"
+        port: 8080
+
+  
+
+
+
+
+       

@@ -32,3 +32,10 @@ To push the image
 oc-mirror --from imageset/mirror_seq1_000000.tar docker://localhost:5000/namespace  --dest-skip-tls
 
 ```
+
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+
+mkdir -p ${HOME}/.config/kustomize/plugin/policy.open-cluster-management.io/v1/policygenerator
+
+curl -O https://github.com/open-cluster-management-io/policy-generator-plugin/releases/download/v1.16.0/linux-amd64-PolicyGenerator
+

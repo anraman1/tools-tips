@@ -19,7 +19,8 @@ yum reinstall ca-certificates.noarch
 192.168.34.11 ansible_connection=local
 
 [database]
-192.168.34.21
+#192.168.34.21 alias to localhost
+192.168.34.21 
 [redis]
 192.168.34.22 ansible_connection=local
 [automationgateway]
@@ -48,9 +49,8 @@ automationgateway_pg_username='db'
 automationgateway_pg_password='db'
 #automationgateway_pg_host=192.168.34.21
 
-```
+``
 
 
 
-
-
+https://www.redhat.com/en/products/trials/my-trials
