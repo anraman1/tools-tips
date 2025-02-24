@@ -58,3 +58,6 @@ mani() {
 }
 
 mani
+
+
+#python -c 'import sys, json, yaml; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)' < placement.json > placement.yaml
