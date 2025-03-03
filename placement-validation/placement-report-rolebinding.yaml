@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"placement-report-rolebinding","namespace":"placement-report"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"placement-report-role"},"subjects":[{"kind":"ServiceAccount","name":"placement-report-sa","namespace":"placement-report"}]}
+  creationTimestamp: "2025-03-02T13:10:28Z"
+  name: placement-report-rolebinding
+  namespace: placement-report
+  resourceVersion: "18544039"
+  uid: 3e963bef-22d1-467d-8eec-1c112b5972cf
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: placement-report-role
+subjects:
+- kind: ServiceAccount
+  name: placement-report-sa
+  namespace: placement-report

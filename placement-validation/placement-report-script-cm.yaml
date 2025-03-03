@@ -1,0 +1,88 @@
+apiVersion: v1
+data:
+  placementRule.csv: |
+    placementrule-machine-config
+  report.sh: |-
+    #!/bin/bash
+    # Input CSV file containing PlacementRule names (one per line)
+    PLACEMENT_RULE_FILE="/output/placementRule.csv"
+    OUTPUT_FILE="/output/placement_report.html"
+
+    # Start HTML file
+    cat <<EOF > "$OUTPUT_FILE"
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Placement Rule Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #4CAF50; color: white; }
+            .match { background-color: #c8e6c9; } /* Light green */
+            .mismatch { background-color: #ffcccb; } /* Light red */
+        </style>
+    </head>
+    <body>
+        <h2>Placement Rule Report</h2>
+        <table>
+            <tr>
+                <th>PlacementRule</th>
+                <th>Placement</th>
+                <th>PlacementRule Clusters</th>
+                <th>Placement Clusters</th>
+                <th>Match Status</th>
+            </tr>
+    EOF
+
+    # Process each PlacementRule from the CSV
+    while read -r placement_rule; do
+        # Derive Placement name by removing "rule" from PlacementRule
+        placement_name="${placement_rule//rule/}"
+
+        # Get the number of decision clusters for PlacementRule
+        pr_clusters=$(oc get placementrule -n acm-config "$placement_rule" -o jsonpath='{.status.decisions[*].clusterName}' | wc -w)
+
+        # Get the number of decision clusters for Placement
+        p_clusters=$(oc get placement -n acm-config "$placement_name" -o jsonpath='{.status.numberOfSelectedClusters}' | wc -w)
+
+        # Determine match status and set CSS class
+        if [[ "$pr_clusters" -eq "$p_clusters" ]]; then
+            match_status="Match"
+            row_class="match"
+        else
+            match_status="Mismatch"
+            row_class="mismatch"
+        fi
+
+        # Append row to HTML file
+        echo "        <tr class=\"$row_class\">" >> "$OUTPUT_FILE"
+        echo "            <td>$placement_rule</td>" >> "$OUTPUT_FILE"
+        echo "            <td>$placement_name</td>" >> "$OUTPUT_FILE"
+        echo "            <td>$pr_clusters</td>" >> "$OUTPUT_FILE"
+        echo "            <td>$p_clusters</td>" >> "$OUTPUT_FILE"
+        echo "            <td>$match_status</td>" >> "$OUTPUT_FILE"
+        echo "        </tr>" >> "$OUTPUT_FILE"
+
+    done < "$PLACEMENT_RULE_FILE"
+
+    # End HTML file
+    cat <<EOF >> "$OUTPUT_FILE"
+        </table>
+    </body>
+    </html>
+    EOF
+
+    echo "Report generated: $OUTPUT_FILE"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"repot":"#!/bin/bash\n# Input CSV file containing PlacementRule names (one per line)\nPLACEMENT_RULE_FILE=\"placementRule.csv\"\nOUTPUT_FILE=\"placement_report.html\"\n\n# Start HTML file\ncat \u003c\u003cEOF \u003e \"$OUTPUT_FILE\"\n\u003c!DOCTYPE html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\n    \u003cmeta charset=\"UTF-8\"\u003e\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n    \u003ctitle\u003ePlacement Rule Report\u003c/title\u003e\n    \u003cstyle\u003e\n        body { font-family: Arial, sans-serif; margin: 20px; }\n        table { width: 100%; border-collapse: collapse; margin-top: 20px; }\n        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }\n        th { background-color: #4CAF50; color: white; }\n        .match { background-color: #c8e6c9; } /* Light green */\n        .mismatch { background-color: #ffcccb; } /* Light red */\n    \u003c/style\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n    \u003ch2\u003ePlacement Rule Report\u003c/h2\u003e\n    \u003ctable\u003e\n        \u003ctr\u003e\n            \u003cth\u003ePlacementRule\u003c/th\u003e\n            \u003cth\u003ePlacement\u003c/th\u003e\n            \u003cth\u003ePlacementRule Clusters\u003c/th\u003e\n            \u003cth\u003ePlacement Clusters\u003c/th\u003e\n            \u003cth\u003eMatch Status\u003c/th\u003e\n        \u003c/tr\u003e\nEOF\n\n# Process each PlacementRule from the CSV\nwhile read -r placement_rule; do\n    # Derive Placement name by removing \"rule\" from PlacementRule\n    placement_name=\"${placement_rule//rule/}\"\n\n    # Get the number of decision clusters for PlacementRule\n    pr_clusters=$(oc get placementrule \"$placement_rule\" -o jsonpath='{.status.decisions[*].clusterName}' | wc -w)\n\n    # Get the number of decision clusters for Placement\n    p_clusters=$(oc get placement \"$placement_name\" -o jsonpath='{.status.numberOfSelectedClusters}' | wc -w)\n\n    # Determine match status and set CSS class\n    if [[ \"$pr_clusters\" -eq \"$p_clusters\" ]]; then\n        match_status=\"Match\"\n        row_class=\"match\"\n    else\n        match_status=\"Mismatch\"\n        row_class=\"mismatch\"\n    fi\n\n    # Append row to HTML file\n    echo \"        \u003ctr class=\\\"$row_class\\\"\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n    echo \"            \u003ctd\u003e$placement_rule\u003c/td\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n    echo \"            \u003ctd\u003e$placement_name\u003c/td\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n    echo \"            \u003ctd\u003e$pr_clusters\u003c/td\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n    echo \"            \u003ctd\u003e$p_clusters\u003c/td\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n    echo \"            \u003ctd\u003e$match_status\u003c/td\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n    echo \"        \u003c/tr\u003e\" \u003e\u003e \"$OUTPUT_FILE\"\n\ndone \u003c \"$PLACEMENT_RULE_FILE\"\n\n# End HTML file\ncat \u003c\u003cEOF \u003e\u003e \"$OUTPUT_FILE\"\n    \u003c/table\u003e\n\u003c/body\u003e\n\u003c/html\u003e\nEOF\n\necho \"Report generated: $OUTPUT_FILE\""},"kind":"ConfigMap","metadata":{"annotations":{},"name":"placement-report-script","namespace":"placement-report"}}
+  creationTimestamp: "2025-03-02T13:17:12Z"
+  name: placement-report-script
+  namespace: placement-report
+  resourceVersion: "18881394"
+  uid: 9a852131-a95e-4287-9616-0733fa670dc1

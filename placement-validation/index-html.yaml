@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>Welcome to nginx!</title>
+    </head>
+    <body>
+    <h1>Hello World!</h1>
+    </body>
+    </html>
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"index.html":"\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n\u003ctitle\u003eWelcome to nginx!\u003c/title\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n\u003ch1\u003eHello World!\u003c/h1\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"index-html","namespace":"placement-report"}}
+  creationTimestamp: "2025-03-02T19:03:21Z"
+  name: index-html
+  namespace: placement-report
+  resourceVersion: "18865258"
+  uid: cf62c066-cad6-400b-a22d-3d7daf77502a

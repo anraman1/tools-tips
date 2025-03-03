@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"Role","metadata":{"annotations":{},"name":"placement-report-role","namespace":"placement-report"},"rules":[{"apiGroups":["cluster.open-cluster-management.io - apps.open-cluster-management.io/v1"],"resources":["placements","placementrules"],"verbs":["get","list","watch"]}]}
+  creationTimestamp: "2025-03-02T13:09:09Z"
+  name: placement-report-role
+  namespace: placement-report
+  resourceVersion: "18658750"
+  uid: f93f1123-5ef9-4a0b-8da7-18edbfc26be9
+rules:
+- apiGroups:
+  - cluster.open-cluster-management.io/v1beta1
+  resources:
+  - placements
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps.open-cluster-management.io/v1
+  resources:
+  - placementrules
+  verbs:
+  - get
+  - list
+  - watch
